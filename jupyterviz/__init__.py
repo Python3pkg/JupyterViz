@@ -8,17 +8,17 @@ resource_package = __name__
 def viz(**kwargs):
     dest="temp_plot.html"
     viz=kwargs['type']
-    if "width" not in kwargs.keys():
+    if "width" not in list(kwargs.keys()):
         kwargs["width"]=600
-    if "height" not in kwargs.keys():
+    if "height" not in list(kwargs.keys()):
         kwargs["height"]=600
-    if "datadf" in kwargs.keys():
+    if "datadf" in list(kwargs.keys()):
         kwargs["data"]=kwargs["datadf"].to_dict(orient="records")
         kwargs.pop("datadf", None)
     resource_path = os.path.join('templates', viz+".html")
     template = pkg_resources.resource_string(resource_package, resource_path)
 
-    for key,value in kwargs.iteritems():
+    for key,value in kwargs.items():
         template=template.replace("{"+key+"}",json.dumps(value))
 
     if not os.path.exists("tmp"):
@@ -61,5 +61,5 @@ def serve(df):
             return df.reset_index().to_dict(orient="records")
 
     api.add_resource(pandarequest, '/api/db')
-    print "URL: https://localhost:8090/api/db"
+    print("URL: https://localhost:8090/api/db")
     app.run(host="0.0.0.0",port=8090,ssl_context='adhoc',threaded=True,)
